@@ -20,5 +20,6 @@ What happens now is pretty opinionated.
 9. GANGLE! has to be installed globally.
 
 Personal Note...........
-This is just a backlash against Javascript in general. I spend 15 minutes when configuring a new Javascript project with webserver, gulp, concat files, ignoring files, bleugh. It's tedious. If I make a new AngularJS 1.x project I want to be 
-working in minutes. For that I don't need tests, ot Gulp. This is just step one to test or demo an idea. GANGLE! gives me that. In an over opinionated way where I don't need to think about anything.
+This is just a backlash against Javascript in general. I spend 15 minutes when configuring a new Javascript project with webserver, gulp, concat files, ignoring files, bleugh. It's tedious. If I make a new demo in an AngularJS 1.x project I want to be working in minutes. And for that I don't need tests, or Gulp, or Webpack. This is just step one to test or demo an idea. GANGLE! gives me that. In an over opinionated way where I don't need to think about anything.
+
+It's never going to set the world alight. But as a journey, I like to think about build systems in the simplest possible way.
