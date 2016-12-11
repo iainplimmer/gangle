@@ -2,85 +2,78 @@ var http = require('http')
 var url = require('url')
 var fs = require('fs')
 var path = require('path')
+var watch = require('node-watch');
+var browserSync = require("browser-sync").create('gangle');
 
 'use strict'
-var folderToWatch ='./src';             //  We need to kow which directories to include
-var excludedFiles = [];                 //  And the ones to exclude
-const baseDirectory = process.cwd()     //  Set the current path 
-const port = 9615                       //  And the port
+//var foldersToWatch = [
+//    './src'
+//];             
 
-//  Let's make a reference to the server that we can use later
-var myServer;
-CreateServer(myServer);
+//var watchList = getDirectories('./');
+var excludedDirectories = ['.git','node_modules'];  //  We need to know which directories to include
 
+//  Let's get the directories that we want to watch first
+// getDirectories('./').map(function (e) {
+    
+//     var iii = excludedDirectories.indexOf(e);
+//     console.log(iii)
 
-function CreateServer (server) {
-    myServer = http.createServer(function (request, response) {
-    try {
-        var requestUrl = url.parse(request.url)
+//     getDirectories('./' + e).map(function (e) {
+//         console.log(e)
+//     })
+// });
 
-        // need to use path.normalize so people can't access directories underneath baseDirectory
-        var fsPath = baseDirectory+path.normalize(requestUrl.pathname)
+var getDirectories = function (dir, filelist, excludedDirectories) {
+    var fs = fs || require('fs')
+    var files = fs.readdirSync(dir);
 
-        response.writeHead(200)
-        var fileStream = fs.createReadStream(fsPath)
-        fileStream.pipe(response)
-        fileStream.on('error',function(e) {
-            response.writeHead(404)     // assume the file doesn't exist
-            response.end()
-        })
-    } catch(e) {
-        response.writeHead(500)
-        response.end()     // end the response so browsers don't hang
-        console.log(e.stack)
-    }
-    }).listen(port)
-    console.log("listening on port " + port)
-}
+    filelist = filelist || [];
+    
+    files.forEach(function (file) {
+        if (fs.statSync(dir + '/' + file).isDirectory()) {
+            filelist = getDirectories(dir + '/' + file, filelist);
+        }
+        else {
+            filelist.push(file);
+        }
+    });
+    return filelist;
+};
 
+var filelist = [];
+var iain = getDirectories('./', filelist);
+console.log(iain)
 
-
-
-//  First thing we are going to do is setup a watcher on a particular folder, this will 
-fs.watch(folderToWatch, {encoding: 'buffer'}, (eventType, filename) => {
-  myServer.close();
-  if (filename) {
-    console.log(filename);
-  }
-  CreateServer(myServer);
+/*
+browserSync.init({
+    server: ".",
+    port: 9001
 });
+*/
 
+//  Returns the directories in the application
+// function getDirectories(srcpath) {
+//     return fs.readdirSync(srcpath).filter(function(file) {
+//         return fs.statSync(path.join(srcpath, file)).isDirectory();
+//     });
+// }
 
+//////console.log(watchList)
 
+/*
+WatchFolder(foldersToWatch[0]);
+*/
 
-
-
-// #!/usr/bin/env node
-
-// 'use strict';
-
-// const program = require('commander');
-
-// console.log('helllo')
-
-// let gangleNow = () => {
-  
-//   console.log('gangling!');
-
-//   exec(fullCommand, execCallback);
-// };
-
-
-// program
-//     .version('0.0.1')
-//     .command('gangle')
-//     .description('Creates a build in one step.')
-//     .action(gangleNow);
-//     //.option('-l, --list [optional]','List all the files and folders that will be parsed')
-//     //.option('-o, --option','option description')  
-//     //.option('-I, --another-input <required>','required user input')
-  
-  
-// program.parse(process.argv); // end with parse to parse through the input
-
+//  First thing we are going to do is setup a watcher on a particular folder, this will read the
+//  gangle.config.js configuration file 
+function WatchFolder (folderToWatch) {
+    console.log('Watching folder')
+    fs.watch(folderToWatch, {encoding: 'buffer'}, (eventType, filename) => {  
+        if (filename) {
+            console.log('filename \'' + filename + '\'has changed');
+            browserSync.reload();     
+        }
+    });
+}
 

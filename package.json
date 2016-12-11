@@ -18,6 +18,6 @@
   "author": "Iain Plimmer",
   "license": "MIT",
   "devDependencies": {
-    
+    "browser-sync": "^2.18.2"
   }
 }
