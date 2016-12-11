@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var fs = require('fs')
 var path = require('path')
 var watch = require('node-watch');
@@ -40,10 +42,10 @@ GetDirectories('./', filelist, excludedDirectories)
 ////////////////////////////////////////////////////////////////////////////////////////////////
 function StartBrowserSync () {
     //  Initialise Browser sync now
-    browserSync.init({
+    /*browserSync.init({
         server: ".",
         port: 9001
-    });
+    });*/
     console.log('-------------------------------------');
     console.log('Gangle 0.0.1 Complete.')
     console.log('-------------------------------------');

@@ -15,5 +15,11 @@
     "browser-sync": "^2.18.2",
     "node-watch": "^0.4.1"
   },
-  "dependencies": {}
+  "bin": {
+   "gangle": "./index.js"
+  },
+  "dependencies": {
+    "browser-sync": "^2.18.2",
+    "node-watch": "^0.4.1"
+  }
 }
