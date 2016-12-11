@@ -1,0 +1,23 @@
+{
+  "name": "gangle",
+  "version": "0.0.1",
+  "description": "A one line build tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/iainplimmer/gangle"
+  },
+  "keywords": [
+    "build",
+    "node",
+    "js"
+  ],
+  "author": "Iain Plimmer",
+  "license": "MIT",
+  "devDependencies": {
+    
+  }
+}
