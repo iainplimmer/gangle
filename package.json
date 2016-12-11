@@ -1,7 +1,7 @@
 {
   "name": "gangle",
-  "version": "0.1.0",
-  "description": "A one line build tool with server. Just like that.",
+  "version": "1.0.0",
+  "description": "A one line web server with file watching for NodeJS. Just like that.",
   "main": "index.js",
   "scripts": {},
   "repository": {
