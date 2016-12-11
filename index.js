@@ -52,10 +52,10 @@ GetDirectories('./')
 ////////////////////////////////////////////////////////////////////////////////////////////////
 function StartBrowserSync () {
     //  Initialise Browser sync now
-    /*browserSync.init({
+    browserSync.init({
         server: ".",
         port: 9001
-    });*/
+    });
     console.log('-------------------------------------');
     console.log('Gangle 1.0.1 Complete.')
     console.log('-------------------------------------'); 
@@ -121,8 +121,8 @@ function GetDirectories (dir) {
     });
 };
 
+//  Runs the rules on whether to add the file to the list to concat. Works only with Javascript so far.
 function AddFilesToConcatList (dir, file) {
-    console.log(file, '!!!!')
     if (file.indexOf('.js') > 0 
         && file.indexOf('.json') == -1 
         && file.indexOf('all.min.js') == -1 
