@@ -9,36 +9,45 @@ var excludedFiles = [];                 //  And the ones to exclude
 const baseDirectory = process.cwd()     //  Set the current path 
 const port = 9615                       //  And the port
 
+//  Let's make a reference to the server that we can use later
+var myServer;
+CreateServer(myServer);
 
 
-server = http.createServer(function (request, response) {
-   try {
-     var requestUrl = url.parse(request.url)
+function CreateServer (server) {
+    myServer = http.createServer(function (request, response) {
+    try {
+        var requestUrl = url.parse(request.url)
 
-     // need to use path.normalize so people can't access directories underneath baseDirectory
-     var fsPath = baseDirectory+path.normalize(requestUrl.pathname)
+        // need to use path.normalize so people can't access directories underneath baseDirectory
+        var fsPath = baseDirectory+path.normalize(requestUrl.pathname)
 
-     response.writeHead(200)
-     var fileStream = fs.createReadStream(fsPath)
-     fileStream.pipe(response)
-     fileStream.on('error',function(e) {
-         response.writeHead(404)     // assume the file doesn't exist
-         response.end()
-     })
-   } catch(e) {
-     response.writeHead(500)
-     response.end()     // end the response so browsers don't hang
-     console.log(e.stack)
-   }
-}).listen(port)
-console.log("listening on port " + port)
+        response.writeHead(200)
+        var fileStream = fs.createReadStream(fsPath)
+        fileStream.pipe(response)
+        fileStream.on('error',function(e) {
+            response.writeHead(404)     // assume the file doesn't exist
+            response.end()
+        })
+    } catch(e) {
+        response.writeHead(500)
+        response.end()     // end the response so browsers don't hang
+        console.log(e.stack)
+    }
+    }).listen(port)
+    console.log("listening on port " + port)
+}
+
+
 
 
 //  First thing we are going to do is setup a watcher on a particular folder, this will 
 fs.watch(folderToWatch, {encoding: 'buffer'}, (eventType, filename) => {
-  if (filename)
+  myServer.close();
+  if (filename) {
     console.log(filename);
-    // Prints: <Buffer ...>
+  }
+  CreateServer(myServer);
 });
 
 
