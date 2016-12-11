@@ -42,10 +42,10 @@ GetDirectories('./', filelist, excludedDirectories)
 ////////////////////////////////////////////////////////////////////////////////////////////////
 function StartBrowserSync () {
     //  Initialise Browser sync now
-    /*browserSync.init({
+    browserSync.init({
         server: ".",
         port: 9001
-    });*/
+    });
     console.log('-------------------------------------');
     console.log('Gangle 0.0.1 Complete.')
     console.log('-------------------------------------');
@@ -59,6 +59,18 @@ function WatchFolder (folderToWatch) {
     return new Promise(function executePromise (resolve, reject) {
         fs.watch(folderToWatch, {encoding: 'buffer'}, (eventType, filename) => {  
             if (filename) {
+
+                /************ 
+                 * 
+                 * 
+                 * 
+                 * This is the part where we are going to do the concat stuff.....
+                 * 
+                 * 
+                 * 
+                 * ************/    
+
+
                 console.log('filename \'' + filename + '\'has changed');
                 browserSync.reload();     
             }
