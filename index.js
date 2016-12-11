@@ -1,17 +1,41 @@
-const fs = require('fs');
-const http = require('http');
+var http = require('http')
+var url = require('url')
+var fs = require('fs')
+var path = require('path')
 
 'use strict'
+var folderToWatch ='./src';             //  We need to kow which directories to include
+var excludedFiles = [];                 //  And the ones to exclude
+const baseDirectory = process.cwd()     //  Set the current path 
+const port = 9615                       //  And the port
 
-const PORT=8080;
 
 
-var index = fs.readFileSync('index.html');
+server = http.createServer(function (request, response) {
+   try {
+     var requestUrl = url.parse(request.url)
+
+     // need to use path.normalize so people can't access directories underneath baseDirectory
+     var fsPath = baseDirectory+path.normalize(requestUrl.pathname)
+
+     response.writeHead(200)
+     var fileStream = fs.createReadStream(fsPath)
+     fileStream.pipe(response)
+     fileStream.on('error',function(e) {
+         response.writeHead(404)     // assume the file doesn't exist
+         response.end()
+     })
+   } catch(e) {
+     response.writeHead(500)
+     response.end()     // end the response so browsers don't hang
+     console.log(e.stack)
+   }
+}).listen(port)
+console.log("listening on port " + port)
 
 
-console.log('program working')
-
-fs.watch('./src', {encoding: 'buffer'}, (eventType, filename) => {
+//  First thing we are going to do is setup a watcher on a particular folder, this will 
+fs.watch(folderToWatch, {encoding: 'buffer'}, (eventType, filename) => {
   if (filename)
     console.log(filename);
     // Prints: <Buffer ...>
