@@ -13,13 +13,15 @@
   "license": "MIT",
   "devDependencies": {
     "browser-sync": "^2.18.2",
+    "concat-files": "^0.1.0",
     "node-watch": "^0.4.1"
   },
   "bin": {
-   "gangle": "./index.js"
-  },
+    "gangle": "./index.js"
+  }, 
   "dependencies": {
     "browser-sync": "^2.18.2",
+    "concat-files": "^0.1.0",
     "node-watch": "^0.4.1"
   }
 }
