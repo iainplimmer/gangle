@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
+////////////////////////////////////////////////////////////////////////////////////////////////
+//  GANGLE! is the most over opinionated Javascript build system and webserver ever. It watches
+//  your JS files, concats them to the folder it expects and runs borwser-sync to watch your
+//  changes and auto refresh the browser. It's nuts, but for every day light use, it's cool.
+////////////////////////////////////////////////////////////////////////////////////////////////
+
 var fs = require('fs')
 var path = require('path')
 var watch = require('node-watch');
@@ -18,7 +24,7 @@ var distributionDirectory = './dist';
 var excludedDirectories = ['.//.git','.//node_modules'];  
 
 console.log('-------------------------------------');
-console.log('Gangle 1.0.1 Started.')
+console.log('Gangle 1.0.1 Started. ')
 console.log('-------------------------------------');
  
 //  HOW IT ALL HANGS TOGETHER
@@ -54,7 +60,7 @@ function StartBrowserSync () {
     console.log('Gangle 1.0.1 Complete.')
     console.log('-------------------------------------'); 
 }
- 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //  Setup a watcher on a particular folder, 
 //  TO DO : this will read the gangle.config.js configuration file for files to ignore 
@@ -71,12 +77,12 @@ function WatchFolder (folderToWatch) {
                 concat(filesToConcat, './' + distributionDirectory + '/all.min.js', function() {
                     console.log('Concat complete. /dist/all.min.js generated');
                 });
- 
+  
                 console.log('filename \'' + filename + '\'has changed');
                 browserSync.reload();     
             }
         });
-        resolve('Watching folder: ' + folderToWatch)
+        resolve('Watching folder: ' + folderToWatch);
     });
 }
 
@@ -100,20 +106,27 @@ function GetDirectories (dir) {
                 //  Pick up subdirectories
                 else if (directoryList.indexOf(dir) == -1) { 
                     //  Add the file to the concat list
-                    if (file.indexOf('.js') > 0 && filesToConcat.indexOf(dir + '/' + file) == -1) {
-                        filesToConcat.push(dir + '/' + file);
-                    }
-                    //  Add the directory to the watch list
+                    AddFilesToConcatList(dir, file);
+
+                    //  Add the directory to the watch list.
                     directoryList.push(dir);
                 }
-                //  Pick up the root directory
+                //  Pick up the root directory.
                 else {                    
-                    if (file.indexOf('.js') > 0 && filesToConcat.indexOf(dir + '/' + file) == -1) {
-                        filesToConcat.push(dir + '/' + file);
-                    }               
+                    AddFilesToConcatList(dir, file);        
                 }            
             });
         }
         resolve(directoryList);
     });
+};
+
+function AddFilesToConcatList (dir, file) {
+    console.log(file, '!!!!')
+    if (file.indexOf('.js') > 0 
+        && file.indexOf('.json') == -1 
+        && file.indexOf('all.min.js') == -1 
+        && filesToConcat.indexOf(dir + '/' + file) == -1) {
+        filesToConcat.push(dir + '/' + file);
+    }        
 };
