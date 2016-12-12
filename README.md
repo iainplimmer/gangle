@@ -49,8 +49,7 @@ This is only a rough example of a simple project, but is enough to illustrate wh
 
 Which means once a file changes, look into the './dist/all.min.js' file. This contains everything.
 
-Just make a reference to this file in your html like so.....
-<script src="./dist/all.min.js"></script>
+Just make a reference to this file in your html.
 
 Personal Note...........
 This is just a backlash against Javascript in general. I spend 15 minutes when configuring a new Javascript project with webserver, gulp, concat files, ignoring files, bleugh. It's tedious. If I make a new demo in an AngularJS 1.x project I want to be working in minutes. And for that I don't need tests, or Gulp, or Webpack. This is just step one to test or demo an idea. GANGLE! gives me that. In an over opinionated way where I don't need to think about anything.
