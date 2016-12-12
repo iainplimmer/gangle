@@ -14,12 +14,12 @@ var concat = require('concat-files');
 'use strict'
 
 //  Let's create some variables that we can use to store program state
-var directoryList = [];
+var directoryList = ['./'];
 var filesToConcat = [];
 var distributionDirectory = './dist';
 
 //  We need to know which directories to include - this needs to be read from a file though TODO.
-var excludedDirectories = ['.//.git','.//node_modules'];  
+var excludedDirectories = ['./.git','./node_modules','./dist'];  
 
 console.log('-------------------------------------');
 console.log('Gangle 1.0.1 Started. ')
@@ -29,7 +29,7 @@ console.log('-------------------------------------');
 //  OK, let's start everything off by setting up the directories to watch, once this is 
 //  done, we call the success of the promise, create a list of folders to watch, and when these
 //  are all executed, we start the server.
-
+ 
 GetDirectories('./')
     .then(function (watchList) {
         var promiseQueue = [];
@@ -40,7 +40,7 @@ GetDirectories('./')
         //  Bundle these promises together before we start the server to ensure all
         //  work has been done before serving files.
         Promise.all(promiseQueue).then(values => { 
-            console.log(values, filesToConcat);
+            console.log(values);
             console.log('Ready to concat: ', filesToConcat);
             StartBrowserSync(); 
         });
@@ -51,10 +51,10 @@ GetDirectories('./')
 ////////////////////////////////////////////////////////////////////////////////////////////////
 function StartBrowserSync () {
     //  Initialise Browser sync now
-    browserSync.init({
+    /*browserSync.init({
         server: ".",
         port: 9001
-    });
+    });*/
     console.log('-------------------------------------');
     console.log('Gangle 1.0.1 Complete.')
     console.log('-------------------------------------'); 
@@ -68,11 +68,10 @@ function WatchFolder (folderToWatch) {
     return new Promise(function executePromise (resolve, reject) {
         fs.watch(folderToWatch, {encoding: 'buffer'}, (eventType, filename) => {  
             if (filename && filename != 'all.min.js') {
-                console.log('GANGLE! : Filename \'' + filename + '\'has changed');
                 CleanFolders()
                 .then(function (ok){
                     concat(filesToConcat, distributionDirectory + '/all.min.js', function() {
-                        console.log('Concat complete. /dist/all.min.js generated');
+                        console.log('Change detected in ' + folderToWatch + '/' + filename + '. /dist/all.min.js generated');
                     });
                     browserSync.reload();   
                 });
@@ -84,8 +83,8 @@ function WatchFolder (folderToWatch) {
 
 function CleanFolders () {
     return new Promise(function (resolve, reject) {
-
-        //  Create the distribution directory
+   
+        //  Create the distribution directory.
         if (!fs.existsSync(distributionDirectory)){
             fs.mkdirSync(distributionDirectory);
         } 
@@ -94,7 +93,7 @@ function CleanFolders () {
             fs.unlinkSync(distributionDirectory + '/all.min.js');
         }
 
-        resolve('Clean up completed.......');
+        resolve('Clean up completed.......!');
     })
 }
 
@@ -105,28 +104,25 @@ function CleanFolders () {
 function GetDirectories (dir) {
     return new Promise(function executePromise (resolve, reject) { 
         var files = fs.readdirSync(dir);        
-        var i = excludedDirectories.indexOf(dir)
-        if (i == -1) {
-            files.forEach(function (file) {
-                //  Check if the file is a directory
-                if (fs.statSync(dir + '/' + file).isDirectory()) {
+        if (excludedDirectories.indexOf(dir) == -1) {
+
+            //  Take each file that is in the files list, and check if they are a directory, if they are
+            //  add them to the watch list, if not, we want to run the function to see if we want to add the file.
+            files.map(function (file) {
+                
+                //  If the current file is a directory and not in the excluded or watch list already                
+                if (fs.statSync(dir + '/' + file).isDirectory() && directoryList.indexOf(dir + file) == -1 && excludedDirectories.indexOf(dir + file) == -1) {
+                    
+                    //  Add the directory to the watch list and start a new promise
+                    directoryList.push(dir + file);
                     GetDirectories(dir + '/' + file)
                         .then(values => {
                             resolve(values);
                         });
-                } 
-                //  Pick up subdirectories
-                else if (directoryList.indexOf(dir) == -1) { 
-                    //  Add the file to the concat list
-                    AddFilesToConcatList(dir, file);
-
-                    //  Add the directory to the watch list.
-                    directoryList.push(dir);
                 }
-                //  Pick up the root directory.
-                else {                    
-                    AddFilesToConcatList(dir, file);        
-                }            
+                else {
+                    AddFilesToConcatList(dir, file);
+                }        
             });
         }
         resolve(directoryList);

@@ -21,7 +21,8 @@ What happens now is pretty opinionated.
 
 
 YOUR PROJECT TREE (EXAMPLE):
-This is only a rough example of a simple project, but is enough to illustrate which files are actuall built and which are ignored.
+
+This is only a rough example of a simple project, but is enough to illustrate which files are actually built and which are ignored.
 
 
     .
