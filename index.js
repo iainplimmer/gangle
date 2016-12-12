@@ -36,15 +36,21 @@ GetDirectories('./')
         watchList.forEach(dir => {
             promiseQueue.push(WatchFolder(dir));            
         });
-         
+
         //  Bundle these promises together before we start the server to ensure all
         //  work has been done before serving files.
-        Promise.all(promiseQueue).then(values => { 
-            console.log(values);
-            //console.log('Ready to concat: ', filesToConcat); i want to hide this as it gets rather big....
+        Promise.all(promiseQueue).then(foldersWatched => { 
+            console.log(foldersWatched);
+            /*console.log('Ready to concat: ', filesToConcat);*/
             StartBrowserSync(); 
+        })
+        .catch(error => {
+            console.log('ERROR BAD! ', error);
         });
     })
+    .catch(error => {
+        console.log('ERRORZ! ', error);
+    });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //  Starts up browser sync 
@@ -109,15 +115,18 @@ function GetDirectories (dir) {
             //  Take each file that is in the files list, and check if they are a directory, if they are
             //  add them to the watch list, if not, we want to run the function to see if we want to add the file.
             files.map(function (file) {
-                
+                 
                 //  If the current file is a directory and not in the excluded or watch list already                
                 if (fs.statSync(dir + '/' + file).isDirectory() && directoryList.indexOf(dir + file) == -1 && excludedDirectories.indexOf(dir + file) == -1) {
                     
                     //  Add the directory to the watch list and start a new promise
-                    directoryList.push(dir + file);
+                    directoryList.push(dir + '/' + file);
                     GetDirectories(dir + '/' + file)
                         .then(values => {
                             resolve(values);
+                        })
+                        .catch(err => {
+                            console.log('FATAL EVIL ERROR! ', error);
                         });
                 }
                 else {
