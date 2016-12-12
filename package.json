@@ -1,6 +1,6 @@
 {
   "name": "gangle",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "GANGLE! is the most over opinionated Javascript build system and webserver ever. It watches your JS files, concats them to the folder it expects and runs browser-sync to watch your changes and auto refresh the browser.",
   "main": "index.js",
   "scripts": {},

@@ -41,7 +41,7 @@ GetDirectories('./')
         //  work has been done before serving files.
         Promise.all(promiseQueue).then(values => { 
             console.log(values);
-            console.log('Ready to concat: ', filesToConcat);
+            //console.log('Ready to concat: ', filesToConcat); i want to hide this as it gets rather big....
             StartBrowserSync(); 
         });
     })
@@ -51,10 +51,10 @@ GetDirectories('./')
 ////////////////////////////////////////////////////////////////////////////////////////////////
 function StartBrowserSync () {
     //  Initialise Browser sync now
-    /*browserSync.init({
+    browserSync.init({
         server: ".",
         port: 9001
-    });*/
+    });
     console.log('-------------------------------------');
     console.log('Gangle 1.0.1 Complete.')
     console.log('-------------------------------------'); 
