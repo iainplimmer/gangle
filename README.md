@@ -19,8 +19,11 @@ What happens now is pretty opinionated.
 8. To run the webserver and start, which is BrowserSync, just type 'gangle'
 9. GANGLE! has to be installed globally.
 
+
 YOUR PROJECT TREE (EXAMPLE):
 This is only a rough example of a simple project, but is enough to illustrate which files are actuall built and which are ignored.
+
+
 .
 ├── node_modules
 |   ├── module 1            * Ignored
@@ -42,6 +45,7 @@ This is only a rough example of a simple project, but is enough to illustrate wh
 └── index.html
 └── package.json            * Ignored
 └── myscript.js             * Built into ./dist/all.min.js
+
 
 Which means once a file changes, look into the './dist/all.min.js' file. This contains everything.
 
