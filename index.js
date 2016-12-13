@@ -9,7 +9,7 @@
 var fs = require('fs');
 var watch = require('node-watch');
 var browserSync = require("browser-sync").create('gangle');
-var concat = require('concat-files');
+var async = require('async');
 
 'use strict'
 
@@ -57,10 +57,10 @@ GetDirectories('./')
 ////////////////////////////////////////////////////////////////////////////////////////////////
 function StartBrowserSync () {
     //  Initialise Browser sync now
-    browserSync.init({
+    /*browserSync.init({
         server: ".",
         port: 9001
-    });
+    });*/
     console.log('-------------------------------------');
     console.log('Gangle 1.0.1 Complete.')
     console.log('-------------------------------------'); 
@@ -76,15 +76,16 @@ function WatchFolder (folderToWatch) {
             if (filename && filename != 'all.min.js') {
                 CleanFolders()
                 .then(function (ok){
-                    concat(filesToConcat, distributionDirectory + '/all.min.js', function() {
+                    //  Concatenate the files to disk
+                    async.waterfall([async.apply(Read, filesToConcat), async.apply(Write, distributionDirectory + '/all.min.js')], function() {
                         console.log('Change detected in ' + folderToWatch + '/' + filename + '. /dist/all.min.js generated');
-                    });
-                    browserSync.reload();   
+                        browserSync.reload();
+                    });                    
                 });
             }  
         }); 
         resolve('Watching folder: ' + folderToWatch);  
-    });
+    }); 
 }
 
 function CleanFolders () {
@@ -147,3 +148,20 @@ function AddFilesToConcatList (dir, file) {
         filesToConcat.push(dir + '/' + file);
     }        
 };  
+
+function Write(destination, buffers, cb) { 
+    var buffersWithNewLine = [];
+    buffers.map(function(b) {
+        buffersWithNewLine.push(b);
+        var newline = new Buffer('\n');
+        buffersWithNewLine.push(newline);
+    });
+    fs.writeFile(destination, Buffer.concat(buffersWithNewLine), cb);
+}
+  
+function Read(files, cb) {
+    async.mapSeries(files, readFile, cb);
+    function readFile(file, cb) {
+        fs.readFile(file, cb);
+    }
+}
