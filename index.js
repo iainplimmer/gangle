@@ -22,7 +22,7 @@ var distributionDirectory = './dist';
 var excludedDirectories = ['./.git','./node_modules','./dist'];  
 
 console.log('-------------------------------------');
-console.log('Gangle 1.0.1 Started. ')
+console.log('Gangle Started. ')
 console.log('-------------------------------------');
  
 //  HOW IT ALL HANGS TOGETHER
@@ -57,12 +57,12 @@ GetDirectories('./')
 ////////////////////////////////////////////////////////////////////////////////////////////////
 function StartBrowserSync () {
     //  Initialise Browser sync now
-    /*browserSync.init({
+    browserSync.init({
         server: ".",
         port: 9001
-    });*/
+    });
     console.log('-------------------------------------');
-    console.log('Gangle 1.0.1 Complete.')
+    console.log('Gangle Complete.')
     console.log('-------------------------------------'); 
 }
  
