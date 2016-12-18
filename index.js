@@ -68,7 +68,7 @@ function WatchFolder (folderToWatch) {
                         GetFileBuffers()
                             .then(function (e){
                                 var p = fs.writeFileSync(distributionDirectory + '/all.min.js', Buffer.concat(fileBuffers));   
-                                browserSync.reload(); // NEED TO BE ASYNC!!!                              
+                                browserSync.reload();                               
                             });                              
                 }); 
             }  
