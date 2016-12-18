@@ -55,14 +55,19 @@ GetDirectories('./')
 //  Starts up browser sync 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 function StartBrowserSync () {
+        console.log('-------------------------------------');
+        console.log('Gangle Starting Browser Sync.')
+        console.log('-------------------------------------');
     //  Initialise Browser sync now
     browserSync.init({
         server: ".",
         port: 9001
+    }, function () {
+        console.log('-------------------------------------');
+        console.log('Gangle Complete, ready to code :)')
+        console.log('-------------------------------------');
     });
-    console.log('-------------------------------------');
-    console.log('Gangle Complete.')
-    console.log('-------------------------------------'); 
+     
 }
  
 ////////////////////////////////////////////////////////////////////////////////////////////////
