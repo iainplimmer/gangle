@@ -31,9 +31,9 @@ console.log('-------------------------------------');
 //  are all executed, we start the server.
  
 GetDirectories('./')
-    .then(function (watchList) {
+    .then(function () {
         var promiseQueue = [];
-        watchList.forEach(dir => {
+        directoryList.forEach(dir => {
             promiseQueue.push(WatchFolder(dir));            
         });
 
@@ -41,7 +41,6 @@ GetDirectories('./')
         //  work has been done before serving files.
         Promise.all(promiseQueue).then(foldersWatched => { 
             console.log(foldersWatched);
-            /*console.log('Ready to concat: ', filesToConcat);*/
             StartBrowserSync(); 
         })
         .catch(error => {
@@ -120,22 +119,22 @@ function GetDirectories (dir) {
                 //  If the current file is a directory and not in the excluded or watch list already                
                 if (fs.statSync(dir + '/' + file).isDirectory() && directoryList.indexOf(dir + file) == -1 && excludedDirectories.indexOf(dir + file) == -1) {
                     
-                    //  Add the directory to the watch list and start a new promise
+                    //  Add the directory to the watch list and let's look up in that directory
                     directoryList.push(dir + '/' + file);
                     GetDirectories(dir + '/' + file)
-                        .then(values => {
-                            resolve(values);
+                        .then(function () {
+                            
                         })
                         .catch(err => {
                             console.log('FATAL EVIL ERROR! ', error);
                         });
                 }
-                else {
+                else {                    
                     AddFilesToConcatList(dir, file);
                 }        
             });
         }
-        resolve(directoryList);
+        resolve();
     });
 };
 
@@ -145,7 +144,7 @@ function AddFilesToConcatList (dir, file) {
         && file.indexOf('.json') == -1 
         && file.indexOf('all.min.js') == -1 
         && filesToConcat.indexOf(dir + '/' + file) == -1) {
-        filesToConcat.push(dir + '/' + file);
+            filesToConcat.push(dir + '/' + file);
     }        
 };  
 
