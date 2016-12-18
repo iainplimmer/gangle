@@ -17,6 +17,7 @@ var async = require('async');
 var directoryList = ['./'];
 var filesToConcat = [];
 var distributionDirectory = './dist';
+var fileBuffers = [];
 
 //  We need to know which directories to include - this needs to be read from a file though TODO.
 var excludedDirectories = ['./.git','./node_modules','./dist'];  
@@ -62,46 +63,31 @@ function WatchFolder (folderToWatch) {
         fs.watch(folderToWatch, {encoding: 'buffer'}, (eventType, filename) => {  
             if (filename && filename != 'all.min.js') {
                 CleanFolders()
-                .then(function (ok){
-                    //  Concatenate the files to disk
-                    async.waterfall([async.apply(Read, filesToConcat), async.apply(Write, distributionDirectory + '/all.min.js')], function() {
-                        console.log('Change detected in ' + folderToWatch + '/' + filename + '. /dist/all.min.js generated');
-                        browserSync.reload();
-                    });                    
-                });
+                    .then(function (ok){
+                        //  Concatenate the files to disk
+                        GetFileBuffers()
+                            .then(function (e){
+                                var p = fs.writeFileSync(distributionDirectory + '/all.min.js', Buffer.concat(fileBuffers));   
+                                browserSync.reload(); // NEED TO BE ASYNC!!!                              
+                            });                              
+                }); 
             }  
         }); 
-        resolve('Watching folder: ' + folderToWatch);  
+        resolve('Watching folder: ' + folderToWatch);
     }); 
 }
 
-
-
-//  Runs the rules on whether to add the file to the list to concat. Works only with Javascript so far.
-function AddFilesToConcatList (dir, file) {
-    if (file.indexOf('.js') > 0 
-        && file.indexOf('.json') == -1 
-        && file.indexOf('all.min.js') == -1 
-        && filesToConcat.indexOf(dir + '/' + file) == -1) {
-            filesToConcat.push(dir + '/' + file);
-    }        
-};  
-
-function Write(destination, buffers, cb) { 
-    var buffersWithNewLine = [];
-    buffers.map(function(b) {
-        buffersWithNewLine.push(b);
-        var newline = new Buffer('\n');
-        buffersWithNewLine.push(newline);
-    });
-    fs.writeFile(destination, Buffer.concat(buffersWithNewLine), cb);
-}
-  
-function Read(files, cb) {
-    async.mapSeries(files, readFile, cb);
-    function readFile(file, cb) {
-        fs.readFile(file, cb);
-    }
+//  Reads the contents of the watched filed.
+function GetFileBuffers () {
+    return new Promise(function (resolve, reject) {
+        filesToConcat.map(function (file) {
+            var fileContent = fs.readFileSync(file);
+            var newline = new Buffer('\n');
+            fileBuffers.push(fileContent);            
+            fileBuffers.push(newline);            
+        });
+        resolve();
+    })
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,6 +160,14 @@ function StartBrowserSync () {
         console.log('-------------------------------------');
         console.log('Gangle Complete, ready to code :)')
         console.log('-------------------------------------');
-    });
-     
+    });  
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+//  Runs the rules on whether to add the file to the list to concat. 
+////////////////////////////////////////////////////////////////////////////////////////////////
+function AddFilesToConcatList (dir, file) {
+    if (file.indexOf('.js') > 0  && file.indexOf('.json') == -1&& file.indexOf('all.min.js') == -1 && filesToConcat.indexOf(dir + '/' + file) == -1) {
+            filesToConcat.push(dir + '/' + file);
+    }        
+}; 
