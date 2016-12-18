@@ -9,7 +9,6 @@
 var fs = require('fs');
 var watch = require('node-watch');
 var browserSync = require("browser-sync").create('gangle');
-var async = require('async');
 
 'use strict'
 
