@@ -79,6 +79,7 @@ function WatchFolder (folderToWatch) {
 //  Reads the contents of the watched filed.
 function GetFileBuffers () {
     return new Promise(function (resolve, reject) {
+        console.log('Getting buffers...', filesToConcat)
         filesToConcat.map(function (file) {
             var fileContent = fs.readFileSync(file);
             var newline = new Buffer('\n');
@@ -167,6 +168,7 @@ function StartBrowserSync () {
 ////////////////////////////////////////////////////////////////////////////////////////////////
 function AddFilesToConcatList (dir, file) {
     if (file.indexOf('.js') > 0  && file.indexOf('.json') == -1&& file.indexOf('all.min.js') == -1 && filesToConcat.indexOf(dir + '/' + file) == -1) {
-            filesToConcat.push(dir + '/' + file);
+        console.log('+ ' + dir + '/' + file) ;   
+        filesToConcat.push(dir + '/' + file);
     }        
 }; 
